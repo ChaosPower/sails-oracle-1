@@ -84,39 +84,39 @@ module.exports = (function() {
         config: {
         },
         // This method runs when a model is initially registered at server start time
-        registerCollection: function(collection, cb) {
+        // registerCollection: function(collection, cb) {
 
-            var def = _.clone(collection);
-            var key = def.identity;
-            var definition = def.definition || {};
+        //     var def = _.clone(collection);
+        //     var key = def.identity;
+        //     var definition = def.definition || {};
 
-            // Set a default Primary Key
-            var pkName = 'id';
+        //     // Set a default Primary Key
+        //     var pkName = 'id';
 
-            // Set the Primary Key Field
-            for (var attribute in definition) {
-                if (!definition[attribute].hasOwnProperty('primaryKey'))
-                    continue;
+        //     // Set the Primary Key Field
+        //     for (var attribute in definition) {
+        //         if (!definition[attribute].hasOwnProperty('primaryKey'))
+        //             continue;
 
-                // Check if custom primaryKey value is falsy
-                if (!definition[attribute].primaryKey)
-                    continue;
+        //         // Check if custom primaryKey value is falsy
+        //         if (!definition[attribute].primaryKey)
+        //             continue;
 
-                // Set the pkName to the custom primaryKey value
-                pkName = attribute;
-            }
-            // Set the primaryKey on the definition object
-            def.primaryKey = pkName;
-
-
-            // Store the definition for the model identity
-            if (dbs[key])
-                return cb();
-            dbs[key.toString()] = def;
+        //         // Set the pkName to the custom primaryKey value
+        //         pkName = attribute;
+        //     }
+        //     // Set the primaryKey on the definition object
+        //     def.primaryKey = pkName;
 
 
-            return cb();
-        },
+        //     // Store the definition for the model identity
+        //     if (dbs[key])
+        //         return cb();
+        //     dbs[key.toString()] = def;
+
+
+        //     return cb();
+        // },
         //added to match waterline orm
         registerConnection: function(connection, collections, cb) {
             console.log("Registring connections pool " + connection.identity + "...");
