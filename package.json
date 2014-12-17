@@ -29,7 +29,7 @@
     "underscore": "~1.4.3",
     "underscore.string": "~2.3.1",
     "waterline-errors": "~0.10.0",
-    "waterline-sequel": "https://github.com/ChaosPower/waterline-sequel.git",
+    "waterline-sequel": "git+https://github.com/ChaosPower/waterline-sequel.git",
     "waterline-cursor": "~0.0.5",
     "generic-pool": "~2.1.1"
   },
