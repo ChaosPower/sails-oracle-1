@@ -50,14 +50,14 @@ module.exports = (function() {
         // Not terribly relevant if not using a non-SQL / non-schema-ed data store
         syncable: true,
         // Including a commitLog config enables transactions in this adapter
-        // Please note that these are not ACID-compliant transactions: 
+        // Please note that these are not ACID-compliant transactions:
         // They guarantee *ISOLATION*, and use a configurable persistent store, so they are *DURABLE* in the face of server crashes.
         // However there is no scheduled task that rebuild state from a mid-step commit log at server start, so they're not CONSISTENT yet.
         // and there is still lots of work to do as far as making them ATOMIC (they're not undoable right now)
         //
         // However, for the immediate future, they do a great job of preventing race conditions, and are
         // better than a naive solution.  They add the most value in findOrCreate() and createEach().
-        // 
+        //
         // commitLog: {
         //  identity: '__default_mongo_transaction',
         //  adapter: 'sails-mongo'
@@ -72,12 +72,12 @@ module.exports = (function() {
             tns: '',
             user: '',
             password: '',
-            // If setting syncable, you should consider the migrate option, 
+            // If setting syncable, you should consider the migrate option,
             // which allows you to set how the sync will be performed.
             // It can be overridden globally in an app (config/adapters.js) and on a per-model basis.
             //
             // drop   => Drop schema and data, then recreate it
-            // alter  => Drop/add columns as necessary, but try 
+            // alter  => Drop/add columns as necessary, but try
             // safe   => Don't change anything (good for production DBs)
             migrate: 'safe'
         },
@@ -120,7 +120,7 @@ module.exports = (function() {
         //added to match waterline orm
         registerConnection: function(connection, collections, cb) {
             console.log("Registring connections pool " + connection.identity + "...");
-            
+
             if (!connection.identity)
                 return cb("Errors.IdentityMissing");
             if (connections[connection.identity])
@@ -142,7 +142,7 @@ module.exports = (function() {
                             //execute all init queries
                             cnx.execute(query, [], function(err, results) {
                                 if (err) {
-                                    return callback(err, null); 
+                                    return callback(err, null);
                                 }
                                 end();
                             });
@@ -202,7 +202,7 @@ module.exports = (function() {
             }
 
             function __DEFINE__(connection, cb) {
-                
+
                 var connectionObject = connections[connectionName];
                 var collection = connectionObject.collections[collectionName];
                 if (!collection) {
@@ -272,7 +272,7 @@ module.exports = (function() {
         },
         // REQUIRED method if integrating with a schemaful database
         /* describe: function(collectionName, cb) {
-         
+
          // Respond with the schema (attributes) for a collection or table in the data store
          var attributes = {};
          cb(null, attributes);
@@ -301,10 +301,10 @@ module.exports = (function() {
                 queries[0] = "SELECT COLUMN_NAME, DATA_TYPE, NULLABLE FROM USER_TAB_COLUMNS WHERE TABLE_NAME = '" + tableName + "'";
                 queries[1] = "SELECT index_name,COLUMN_NAME FROM user_ind_columns WHERE table_name = '" + tableName + "'";
                 queries[2] = "SELECT cols.table_name, cols.column_name, cols.position, cons.status, cons.owner "
-                        + "FROM all_constraints cons, all_cons_columns cols WHERE cols.table_name = '" + tableName 
+                        + "FROM all_constraints cons, all_cons_columns cols WHERE cols.table_name = '" + tableName
                         + "' AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner "
                         + "ORDER BY cols.table_name, cols.position";
-                
+
                 async.mapSeries(queries, function(query, callback) {
                     connection.execute(query, [], callback);
                 }, function(err, results) {
@@ -440,9 +440,9 @@ module.exports = (function() {
         // Optional override of built-in alter logic
         // Can be simulated with describe(), define(), and drop(),
         // but will probably be made much more efficient by an override here
-        // alter: function (collectionName, attributes, cb) { 
+        // alter: function (collectionName, attributes, cb) {
         // Modify the schema of a table or collection in the data store
-        // cb(); 
+        // cb();
         // },
 
 
@@ -551,7 +551,7 @@ module.exports = (function() {
                 var tableName = collectionName;
 
                 var records = [];
-                
+
                 async.eachSeries(valuesList, function(data, cb) {
 
                     // Prepare values
@@ -621,7 +621,7 @@ module.exports = (function() {
 
                     // Build a Query to get newly inserted records
                     /*  var query = 'SELECT * FROM ' + tableName.toUpperCase() + ' WHERE ' + pk + ' IN (' + records + ');';
-                     
+
                      // Run Query returing results
                      console.log('CEach2');
                      console.log(query);
@@ -664,7 +664,7 @@ module.exports = (function() {
                 var processor = new Processor();
                 var _query;
                 var sequel = new Sequel(schema, sqlOptions);
-                
+
                 //set default order by Primary key autoIncrement
                 if (!options.groupBy) {
                     var PK = _getPK(connectionName, collectionName);
@@ -673,8 +673,8 @@ module.exports = (function() {
                     }
                     options.sort[PK] = 1;
                 }
-                
-                
+
+
  		var limit = options.limit || null;
                 var skip = options.skip || null;
                 delete options.skip;
@@ -686,7 +686,7 @@ module.exports = (function() {
                 } catch (e) {
                     return cb(e);
                 }
-				
+
 		var findQuery = _query.query[0];
 
                 if (limit && skip) {
@@ -713,7 +713,7 @@ module.exports = (function() {
 
 
                     result = processor.synchronizeResultWithModel(result, collection.attributes);
-                    
+
                     cb(null, result);
                 });
 
@@ -802,10 +802,10 @@ module.exports = (function() {
                             console.log('#Error executing Update ' + err.toString() + '.');
                             return cb(handleQueryError(err));
                         }
-                        
+
                         var criteria = {where: {}};
-                        
-                        if (ids.length === 1) {   
+
+                        if (ids.length === 1) {
                             criteria.where[pk] = ids[0];
                         } else {
                             criteria.where[pk] = ids;
@@ -817,9 +817,9 @@ module.exports = (function() {
                         } catch (e) {
                             return cb(e);
                         }
-                        
+
                         var findQuery =  _query.query[0];
-                        
+
                         if(ids.length === 1){
                             findQuery = 'SELECT * FROM (' + findQuery + ') WHERE LINE_NUMBER = 1';
                         }
@@ -1128,7 +1128,7 @@ module.exports = (function() {
                                     }
                                     var attrs = collection.attributes;
                                     //result = processor.synchronizeResultWithModel(result, attrs);
-                                    
+
                                     parentRecords = result;
 
                                     var splitChildren = function(parent, next) {
@@ -1182,7 +1182,7 @@ module.exports = (function() {
                                         //var pk = _getPK(connectionName, popInstructions[0].parent).toUpperCase();
                                         var pk = _getPK(connectionName, popInstructions[0].parent);
                                         //var modelPk = _getModelPK(connectionName, popInstructions[0].parent, pk);
-                                        //console.log('pk :' , pk , 'modelPk ', modelPk)  ;  
+                                        //console.log('pk :' , pk , 'modelPk ', modelPk)  ;
 
                                         var alias = populationObject.strategy.strategy === 1 ? popInstructions[0].parentKey : popInstructions[0].alias;
                                         //console.log('Alias ---->----->--->-->-->->->>', alias);
@@ -1264,7 +1264,7 @@ module.exports = (function() {
                                                 //var queryI = q.qs.replace('^?^', parent[pk]).slice(0, -32);
                                                 var queryI = q.qs.replace('^?^', parent[modelPk])/*.slice(0, -32)*/;
                                                 //queryI = queryI.substring(0,queryI.length-32);
-                                                //queryI = queryI.split('ORDER BY')[0];// pour supprimer la clause order by 
+                                                //queryI = queryI.split('ORDER BY')[0];// pour supprimer la clause order by
                                                 if (i !== 0)
                                                     queryI = '( ' + queryI + ' ) UNION ';
                                                 else
@@ -1290,7 +1290,7 @@ module.exports = (function() {
                                         // Add a final sort to the Union clause for integration
                                         /*if (parentRecords.length > 1) {
                                          qs += ' ORDER BY ';
-                                         
+
                                          if (!Array.isArray(q.instructions)) {
                                          lodash.keys(q.instructions.criteria.sort).forEach(function(sortKey) {
                                          var direction = q.instructions.criteria.sort[sortKey] === 1 ? 'ASC' : 'DESC';
@@ -1377,15 +1377,15 @@ module.exports = (function() {
          **********************************************
          * Optional overrides
          **********************************************
-         
+
          // Optional override of built-in batch create logic for increased efficiency
          // otherwise, uses create()
          createEach: function (collectionName, cb) { cb(); },
-         
+
          // Optional override of built-in findOrCreate logic for increased efficiency
          // otherwise, uses find() and create()
          findOrCreate: function (collectionName, cb) { cb(); },
-         
+
          // Optional override of built-in batch findOrCreate logic for increased efficiency
          // otherwise, uses findOrCreate()
          findOrCreateEach: function (collectionName, cb) { cb(); }
@@ -1396,7 +1396,7 @@ module.exports = (function() {
          **********************************************
          * Custom methods
          **********************************************
-         
+
          ////////////////////////////////////////////////////////////////////////////////////////////////////
          //
          // > NOTE:  There are a few gotchas here you should be aware of.
@@ -1409,11 +1409,11 @@ module.exports = (function() {
          //      The first argument of callbacks is always an error object.
          //      For some core methods, Sails.js will add support for .done()/promise usage.
          //
-         //    + 
+         //    +
          //
          ////////////////////////////////////////////////////////////////////////////////////////////////////
-         
-         
+
+
          // Any other methods you include will be available on your models
          foo: function (collectionName, cb) {
          cb(null,"ok");
@@ -1421,26 +1421,26 @@ module.exports = (function() {
          bar: function (collectionName, baz, watson, cb) {
          cb("Failure!");
          }
-         
-         
+
+
          // Example success usage:
-         
+
          Model.foo(function (err, result) {
          if (err) console.error(err);
          else console.log(result);
-         
+
          // outputs: ok
          })
-         
+
          // Example error usage:
-         
+
          Model.bar(235, {test: 'yes'}, function (err, result){
          if (err) console.error(err);
          else console.log(result);
-         
+
          // outputs: Failure!
          })
-         
+
          */
 
 
@@ -1481,7 +1481,7 @@ module.exports = (function() {
             Object.keys(attributes).forEach(function(key) {
                 var columnName = attributes[key].columnName || key;
                 if (columnName === pk) {
-                //if (columnName.toUpperCase() === pk) {    
+                //if (columnName.toUpperCase() === pk) {
                     modelPk = key;
                 }
                 return;
